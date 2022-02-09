@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 import numpy as np
 
-table = pd.read_excel('examlpe.xlsx')
-time_x = table.values[:, 0]
-l_correl_y = table.values[:, 1]
+table = pd.read_excel('D://study//leti//vkr_mag//examlpe.xlsx')
+time = table.values[:, 0]
+l_tremor = table.values[:, 1]
+r_tremor = table.values[:, 2]
 
 # сглаживание графика
 #x_int = np.linspace(time_x[0], l_correl_y[-1], 10)
@@ -13,23 +14,30 @@ l_correl_y = table.values[:, 1]
 #y_int = interpolate.splev(x_int, par, der = 0)
 
 # сглаживание
-inerp_graph = interpolate.interp1d(time_x, l_correl_y, kind='cubic')
-xnew = np.linspace(time_x[0], time_x[len(time_x) - 1], 30)
+# l_tremor
+l_tremor_new = interpolate.interp1d(time, l_tremor, kind='cubic')
+# r_tremor
+r_tremor_new = interpolate.interp1d(time, r_tremor, kind='cubic')
+# time
+time_new = np.linspace(time[0], time[len(time) - 1], 80)
 
-# l_spectrum
+# plot l_tremor
 plt.subplot(2, 1, 1)
-plt.plot(time_x, l_correl_y, 'ro',xnew, inerp_graph(xnew), '--')
-plt.plot(time_x, l_correl_y, marker = 'o', color='r')
+# initial date
+plt.plot(time, l_tremor, color='r')
+# interpolation
+plt.plot(time_new, l_tremor_new (time_new), '--',  color='b')
 plt.grid()
 plt.xlabel("time")
-plt.ylabel("l_spectrum")
+plt.ylabel("l_tremor")
 
-# r_spectrum
+# plot r_tremor
 plt.subplot(2, 1, 2)
-plt.plot(time_x, l_correl_y, 'ro',xnew, f2(xnew), '--')
-plt.plot(time_x, l_correl_y, marker = 'o', color='r')
+# initial date
+plt.plot(time, r_tremor, color='r')
+# interpolation
+plt.plot(time_new, r_tremor_new (time_new), '--',  color='b')
 plt.grid()
 plt.xlabel("time")
-plt.ylabel("r_spectrum")
+plt.ylabel("r_tremor")
 plt.show()
-
