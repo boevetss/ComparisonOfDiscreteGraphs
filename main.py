@@ -1,11 +1,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import interpolate
+from scipy import integrate
 import numpy as np
 
 def main ():
     table = pd.read_excel('examlpe.xlsx')
+    # x
     time = table.values[:, 0]
+    # y
     l_tremor = table.values[:, 1]
     r_tremor = table.values[:, 2]
 
@@ -15,14 +18,11 @@ def main ():
     spl_tremor_l = spl_l(time_new)
     spl_tremor_r = spl_r(time_new)
 
-    # interp1d
-    #
-    # l_tremor
-    #l_tremor_new = interpolate.interp1d(time, l_tremor, kind='cubic')
-    # r_tremor
-    #r_tremor_new = interpolate.interp1d(time, r_tremor, kind='cubic')
-    # time
-    #time_new = np.linspace(time[0], time[len(time) - 1], 80)
+    area_l = integrate.trapz(spl_tremor_l, x = time_new)
+    print(area_l)
+
+    area_r = integrate.trapz(spl_tremor_r, x = time_new)
+    print(area_r)
 
     # plot l_tremor
     #
