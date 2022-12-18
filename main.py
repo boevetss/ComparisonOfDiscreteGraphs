@@ -5,6 +5,7 @@ from scipy import integrate
 import numpy as np
 from tkinter import *
 from sklearn import metrics
+from statistics import mean
 
 def main ():
     # выделение диапазонов
@@ -22,8 +23,8 @@ def main ():
 
     # обработка данных
         # для примера используется файл с измерениями P1_2 
-        table = pd.read_excel('examlpe.xlsx')
-        #table = pd.read_excel('examlpe5.xlsx')
+        #table = pd.read_excel('examlpe.xlsx')
+        table = pd.read_excel('examlpe5.xlsx')
 
         # x
         hz = table.values[:, 1]
@@ -160,13 +161,78 @@ def main ():
 
     # оценка точности
         # среднняя абсолютная ошибка
-        print(f'error = {metrics.mean_absolute_error(error_hz, hz)}')
+        print(f'Средняя абсолютная ошибка (по модулю) = {metrics.mean_absolute_error(error_hz, hz)}')
 
         # среднеквадратическая ошибка MSE
-        print(f'error = {metrics.mean_squared_error(error_hz, hz)}')
+        #print(f'Средний квадрат ошибки (квадрат) = {metrics.mean_squared_error(error_hz, hz)}')
 
         # среднеквадратическая ошибка RMSE
-        print(f'error = {np.sqrt(metrics.mean_squared_error(error_hz, hz))}')
+        print(f'Среднеквадратическая ошибка = {np.sqrt(metrics.mean_squared_error(error_hz, hz))}')
     
+    # сравнение диапазонов
+    # диапазоны 0-2 и 6-8
+    # нахождение среднего на диапазонах и их сравнение
+        # диапазоны 0_2 и 6_8
+        list_0_2 = []
+        for i in range(len(l_spectrum)):
+            if (hz[i] > 0) and (hz[i] < 2):
+                list_0_2.append(l_spectrum[i])
+        #print(list_0_2)
+        list_avg_0_2 = mean (list_0_2)
+        #print(list_avg_0_2)
+
+        list_4_6 = []
+        for i in range(len(l_spectrum)):
+            if (hz[i] > 4) and (hz[i] < 6):
+                list_4_6.append(l_spectrum[i])
+        #print(list_0_2)
+        list_avg_4_6 = mean (list_4_6)
+        #print(list_avg_4_6)
+
+        list_7_10 = []
+        for j in range(len(l_spectrum)):
+            if (hz[j] > 7) and (hz[j] < 10):
+                list_7_10.append(l_spectrum[j])
+        #print(list_6_8)
+        list_avg_7_10 = mean (list_7_10)
+        #print(list_avg_7_10)
+
+        list_12_14 = []
+        for i in range(len(l_spectrum)):
+            if (hz[i] > 12) and (hz[i] < 14):
+                list_12_14.append(l_spectrum[i])
+        #print(list_0_2)
+        list_avg_12_14 = mean (list_12_14)
+        #print(list_avg_12_14)
+
+        if list_avg_0_2 > list_avg_7_10:
+            print("Пациент здоров!")
+        else: 
+            print("Пациент не здоров!")
+
+        list = [list_avg_0_2, list_avg_4_6, list_avg_7_10]
+        list_min = min(list)
+        list_max = max (list)
+
+        if list_min == list_avg_4_6:
+            print("Пациент здоров!")
+        else: 
+            print("Пациент не здоров!")
+
+        if list_max == list_avg_0_2:
+            print("Пациент здоров!")
+        else: 
+            print("Пациент не здоров!") 
+
+        if list_avg_7_10 > list_avg_12_14:
+            print("Пациент здоров!")
+        else: 
+            print("Пациент не здоров!")  
+
+        if list_avg_0_2 > list_avg_4_6 and list_avg_7_10 > list_avg_12_14:
+            print("Пациент здоров!")
+        else: 
+            print("Пациент не здоров!")     
+  
 if __name__ == "__main__":
 	main()
