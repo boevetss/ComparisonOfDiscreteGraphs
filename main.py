@@ -4,7 +4,7 @@ from scipy import interpolate
 from scipy import integrate
 import numpy as np
 from tkinter import *
-from sklearn import metrics
+import metrics
 from statistics import mean
 
 def main ():
@@ -36,7 +36,7 @@ def main ():
         # одномерный массив
         hz_new = np.linspace(hz.min(), hz.max(), int(len(hz) / 4))
 
-        # k = 3 - кубический сплайн
+        # Сплайн третьего порядка (k = 3)
         spl_l = interpolate.make_interp_spline(hz, l_spectrum, k=3)
         spl_r = interpolate.make_interp_spline(hz, r_spectrum, k=3)
         spl_spectrum_l = spl_l(hz_new)
@@ -76,7 +76,7 @@ def main ():
         # Convert array of integers to pandas series
         numbers_series_x2 = pd.Series(arr_x)
         numbers_series_y_r2 = pd.Series(arr_y_r)
-        numbers_series_y_l2 = pd.Series(arr_y_r)
+        numbers_series_y_l2 = pd.Series(arr_y_l)
         
         # Get the moving averages of series
         # of observations till the current time
@@ -85,68 +85,115 @@ def main ():
         moving_averages_y_l2 = round(numbers_series_y_l2.ewm(alpha=0.1, adjust=False).mean(), 2)
 
         # Convert pandas series back to list
-        moving_averages_list_x2 = moving_averages_x2.tolist()
-        moving_averages_list_y_r2 = moving_averages_y_r2.tolist()
-        moving_averages_list_y_l2 = moving_averages_y_l2.tolist()
+        #moving_averages_list_x2 = moving_averages_x2.tolist()
+        #moving_averages_list_y_r2 = moving_averages_y_r2.tolist()
+        #moving_averages_list_y_l2 = moving_averages_y_l2.tolist()
 
     # отрисовка данных
-        # plot l_spectrum
-
-        # init date
-        plt.subplot(2, 4, 1)
+        # 3.3.1 Аппроксимация
+        # Исходные данные. Левый спектр
+        plt.subplot(2, 3, 1)
         plt.plot(hz, l_spectrum, color='r')
         plt.grid()
         plt.ylabel("l_spectrum")
-        plt.xlabel("Исходные данные")
+        plt.xlabel("Исходные данные") 
 
-        # splain
-        ax = plt.subplot(2, 4, 2)
-        #ymin, ymax = plt. ylim()
-        plt.plot(hz_new, spl_spectrum_l, '--',  color='b')
-        mnogo_palok(ax)
-        plt.grid()
-        plt.xlabel("Кубический сплайн")
-
-        # skolz
-        ax = plt.subplot(2, 4, 3)
-        plt.plot(moving_averages_x, moving_averages_y_r, '--',  color='b')
-        mnogo_palok(ax)
-        plt.grid()
-        plt.xlabel("Простое скользящее среднее, n = 15")
-
-        # eps
-        ax = plt.subplot(2, 4, 4)       
-        plt.plot(moving_averages_x2, moving_averages_y_r2, '--',  color='b')
-        mnogo_palok(ax)
-        plt.grid()
-        plt.xlabel("Экспон. скользящее среднее, альфа = 0.1")
-
-        # plot r_tremor
-        
-
-        # initial date
-        plt.subplot(2, 4, 5)
+        # Исходные данные. Правый спектр
+        plt.subplot(2, 3, 4)
         plt.plot(hz, r_spectrum, color='r')
         plt.grid()
         plt.ylabel("r_spectrum")
         plt.xlabel("Исходные данные")
 
-        # splain
-        ax = plt.subplot(2, 4, 6)
+        # 3.3.1.1 
+        # Спектр левой руки
+        plt.subplot(2, 3, 2)
+
+        # Спектр правой руки
+        plt.subplot(2, 3, 5)
+
+        # 3.3.1.2 
+        # Спектр левой руки
+        plt.subplot(2, 3, 3)
+
+        # Спектр правой руки
+        plt.subplot(2, 3, 6)
+
+        plt.show()
+
+        # 3.3.2 Интерполяция
+        # Исходные данные. Левый спектр
+        plt.subplot(2, 2, 1)
+        plt.plot(hz, l_spectrum, color='r')
+        plt.grid()
+        plt.ylabel("l_spectrum")
+        plt.xlabel("Исходные данные")
+
+        # Исходные данные. Правый спектр
+        plt.subplot(2, 2, 3)
+        plt.plot(hz, r_spectrum, color='r')
+        plt.grid()
+        plt.ylabel("r_spectrum")
+        plt.xlabel("Исходные данные")
+
+        # 3.3.2.1 Сплайн 3 порядка
+        # Спектр левой руки
+        ax = plt.subplot(2, 2, 2)
+        ymin, ymax = plt. ylim()
+        plt.plot(hz_new, spl_spectrum_l, '--',  color='b')
+        mnogo_palok(ax)
+        plt.grid()
+        plt.xlabel("Кубический сплайн")
+
+        # Спектр правой руки
+        ax = plt.subplot(2, 2, 4)
         mnogo_palok(ax)
         plt.plot(hz_new, spl_spectrum_r, '--',  color='b')
         plt.grid()
         plt.xlabel("Кубический сплайн")
 
-        # skolz
-        ax = plt.subplot(2, 4, 7)
+        plt.show()
+
+        # 3.3.3. Скользящее среднее
+        # Исходные данные. Спектр левой руки
+        plt.subplot(2, 3, 1)
+        plt.plot(hz, l_spectrum, color='r')
+        plt.grid()
+        plt.ylabel("l_spectrum")
+        plt.xlabel("Исходные данные")
+
+        # Исходные данные. Спектр правой руки
+        plt.subplot(2, 3, 4)
+        plt.plot(hz, r_spectrum, color='r')
+        plt.grid()
+        plt.ylabel("r_spectrum")
+        plt.xlabel("Исходные данные")
+
+        # 3.3.3.1 Простое скользящее среднее
+        # Спектр правой руки
+        ax = plt.subplot(2, 3, 2)
+        plt.plot(moving_averages_x, moving_averages_y_r, '--',  color='b')
+        mnogo_palok(ax)
+        plt.grid()
+        plt.xlabel("Простое скользящее среднее, n = 15")
+
+        # Спектр левой руки
+        ax = plt.subplot(2, 3, 5)
         mnogo_palok(ax)
         plt.plot(moving_averages_x, moving_averages_y_l, '--',  color='b')
         plt.grid()
         plt.xlabel("Простое скользящее среднее, n = 15")
 
-        # eps
-        ax = plt.subplot(2, 4, 8)
+        # 3.3.3.2 Экспоненциальное скользящее среднее
+        # Спектр правой руки
+        ax = plt.subplot(2, 3, 3)       
+        plt.plot(moving_averages_x2, moving_averages_y_r2, '--',  color='b')
+        mnogo_palok(ax)
+        plt.grid()
+        plt.xlabel("Экспон. скользящее среднее, альфа = 0.1")
+
+        # Спектр левой руки
+        ax = plt.subplot(2, 3, 6)
         mnogo_palok(ax)
         plt.plot(moving_averages_x2, moving_averages_y_l2, '--',  color='b')
         plt.grid()
@@ -158,21 +205,20 @@ def main ():
         for el in hz_new:
             error_hz.extend([el, el, el, el])
 
+        
 
-    # оценка точности
+
+    # 3.4 оценка точности
         # среднняя абсолютная ошибка
-        print(f'Средняя абсолютная ошибка (по модулю) = {metrics.mean_absolute_error(error_hz, hz)}')
+        # print(f'Средняя абсолютная ошибка (по модулю) = {metrics.mean_absolute_error(error_hz, hz)}')
 
         # среднеквадратическая ошибка MSE
         #print(f'Средний квадрат ошибки (квадрат) = {metrics.mean_squared_error(error_hz, hz)}')
 
         # среднеквадратическая ошибка RMSE
-        print(f'Среднеквадратическая ошибка = {np.sqrt(metrics.mean_squared_error(error_hz, hz))}')
+        # print(f'Среднеквадратическая ошибка = {np.sqrt(metrics.mean_squared_error(error_hz, hz))}')
     
-    # сравнение диапазонов
-    # диапазоны 0-2 и 6-8
-    # нахождение среднего на диапазонах и их сравнение
-        # диапазоны 0_2 и 6_8
+    # 3.5 Сравнение диапазонов
         list_0_2 = []
         for i in range(len(l_spectrum)):
             if (hz[i] > 0) and (hz[i] < 2):
